@@ -1,105 +1,135 @@
 
-const SPEED = 10;
+const Z = 90;
+const S = 83;
+
+const SPEED_X = 10;
 const SPEED_PAD = 15;
 const SPEED_PAD2 = 15;
 const WIDTH = 800;
-const HEIGTH = 680;
+const HEIGHT = 680;
+const SPEED_Y_MAX = 10;
 
 const BALL_RADIUS = 30;
 const PAD_WIDTH = 50;
 const PAD_HEIGTH = 150;
 
-let positionEllipseX = WIDTH/2;
-let positionEllipseY = HEIGTH/2;
+const joueur1 = {
+  x: WIDTH/10,
+  y: HEIGHT/2 - PAD_HEIGTH/2,
+  height: PAD_HEIGTH,
+  width: PAD_WIDTH,
+  speed: 0,
+  score: 0
+};
 
-let currentSpeedEllipseX = SPEED;
-let currentSpeedEllipseY = SPEED;
+const joueur2 = {
+  x: WIDTH/1.2,
+  y: HEIGHT/2 - PAD_HEIGTH/2,
+  height: PAD_HEIGTH,
+  width: PAD_WIDTH,
+  speed: 0,
+  score: 0
+};
 
-let positionRectX = WIDTH/10;
-let positionRectY = HEIGTH/2 - PAD_HEIGTH/2;
+const ball = {
+  x : WIDTH/2,
+  y : HEIGHT/2,
+  radius: BALL_RADIUS,
+  speed_x: SPEED_X,
+  speed_y: 0
+};
 
-let positionRect2X = WIDTH/1.2;
-let positionRect2Y = HEIGTH/2 - PAD_HEIGTH/2;
+const RATIO = joueur1.y/(joueur1.y + (joueur1.height/2));
+const RATIO2 = joueur2.y/(joueur2.y + (joueur2.height/2));
+let SPEED_Y = 0;
 
-let currentSpeedRectY = 0;
-let currentSpeedRect2Y = 0;
-
-let scoreJoueur1 = 0;
-let scoreJoueur2 = 0;
-
-let text = 'Score joueur 1 = ' + scoreJoueur1;
-let text2 = 'Score joueur 2 = ' + scoreJoueur2;
-
+let textScore = 'Score joueur 1 = ' + joueur1.score;
+let textScore2 = 'Score joueur 2 = ' + joueur2.score;
 
 function setup() {
   frameRate(30);
-  createCanvas(WIDTH, HEIGTH);
+  createCanvas(WIDTH, HEIGHT);
 }
-
 
 function draw() {
   background(75);
 
-  if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
-    currentSpeedRectY = 0;
+  if (!(keyIsDown(Z) || keyIsDown(S))) {
+    joueur1.speed = 0;
   } 
 
   if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
-    currentSpeedRect2Y = 0;
+    joueur2.speed = 0;
   } 
 
+  joueur1.y += joueur1.speed;
+  joueur2.y += joueur2.speed;
 
-  positionRectY += currentSpeedRectY;
-  positionRect2Y += currentSpeedRect2Y;
+  ball.x += ball.speed_x;
+  ball.y += ball.speed_y;
 
-  positionEllipseX += currentSpeedEllipseX;
-  positionEllipseY += currentSpeedEllipseY;
+  if (ball.x >= (WIDTH - ball.radius)) {
+    ball.x = WIDTH/2;
+    ball.y = HEIGHT/2;
+    ball.speed_y = 0;
+    joueur1.score ++;
+    textScore = 'Score joueur 1 = ' + joueur1.score;
+  }
+  else if (ball.x <= ball.radius) {
+    ball.x = WIDTH/2;
+    ball.y = HEIGHT/2;
+    ball.speed_y = 0;
+    joueur2.score ++;
+    textScore2 = 'Score joueur 2 = ' + joueur2.score;
+  }
+  else if (ball.y >= (HEIGHT)) {
+    ball.speed_y = -SPEED_Y;
+  }
+  else if (ball.y <= 0) {
+    ball.speed_y = SPEED_Y;
+  }
  
-
-  if (positionEllipseX >= (WIDTH - BALL_RADIUS)) {
-    positionEllipseX = WIDTH/2;
-    positionEllipseY = HEIGTH/2;
-    scoreJoueur1 ++;
+  if ((ball.x <= joueur1.x + joueur1.width + ball.radius) && ((ball.y >= joueur1.y) && (ball.y <= joueur1.y + joueur1.height/2))) {
+    ball.speed_x = SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * RATIO;
+    ball.speed_y = -SPEED_Y ;
   }
-  else if (positionEllipseX <= BALL_RADIUS) {
-    positionEllipseX = WIDTH/2;
-    positionEllipseY = HEIGTH/2;
-    scoreJoueur2 ++;
+  else if ((ball.x <= joueur1.x + joueur1.width + ball.radius) && ((ball.y >= joueur1.y + joueur1.height/2) && (ball.y <= joueur1.y + joueur1.height))) {
+    ball.speed_x = SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * RATIO;
+    ball.speed_y = SPEED_Y;
   }
-  else if (positionEllipseY >= (HEIGTH - BALL_RADIUS)) {
-    currentSpeedEllipseY = -SPEED;
+  else if ((ball.x >= joueur2.x - ball.radius) && ((ball.y >= joueur2.y) && (ball.y <= joueur2.y + joueur2.height/2))){
+    ball.speed_x = -SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * RATIO2;
+    ball.speed_y = -SPEED_Y;
   }
-  else if (positionEllipseY <= BALL_RADIUS) {
-    currentSpeedEllipseY = SPEED;
-  }
-
-  if ((positionEllipseX <= positionRectX + PAD_WIDTH + BALL_RADIUS) && (positionEllipseY >= positionRectY) && (positionEllipseY <= positionRectY + PAD_HEIGTH)) {
-    currentSpeedEllipseX = SPEED;
-  }
-  else if ((positionEllipseX >= positionRect2X - BALL_RADIUS) && (positionEllipseY >= positionRect2Y) && (positionEllipseY <= positionRect2Y + PAD_HEIGTH)) {
-    currentSpeedEllipseX = -SPEED;
+  else if ((ball.x >= joueur2.x - ball.radius) && ((ball.y >= joueur2.y + joueur2.height/2) && (ball.y <= joueur2.y + joueur2.height))) {
+    ball.speed_x = -SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * RATIO2;
+    ball.speed_y = SPEED_Y;
   }
 
-  
-  circle(positionEllipseX, positionEllipseY, BALL_RADIUS);
-  rect(positionRectX, positionRectY, PAD_WIDTH, PAD_HEIGTH);
-  rect(positionRect2X, positionRect2Y, PAD_WIDTH, PAD_HEIGTH);
 
+  circle(ball.x, ball.y, ball.radius);
+  rect(joueur1.x, joueur1.y, joueur1.width, joueur1.height);
+  rect(joueur2.x, joueur2.y, joueur2.width, joueur2.height);
+  textSize(32);
+  text(textScore, 50, 100);
+  text(textScore2, 500, 100);
 }
-
  
 function keyPressed() {
-
-    if (keyCode === UP_ARROW) {
-    currentSpeedRectY = -SPEED_PAD;
-  } else if (keyCode === DOWN_ARROW) {
-    currentSpeedRectY = SPEED_PAD;
-  }
+  if (keyCode === Z) {
+    joueur1.speed = -SPEED_PAD;
+  } else if (keyCode === S) {
+    joueur1.speed = SPEED_PAD;
+  } 
 
   if (keyCode === UP_ARROW) {
-    currentSpeedRect2Y = -SPEED_PAD2;
+    joueur2.speed = -SPEED_PAD2;
   } else if (keyCode === DOWN_ARROW) {
-    currentSpeedRect2Y = SPEED_PAD2;
+    joueur2.speed = SPEED_PAD2;
   }
 }
 
