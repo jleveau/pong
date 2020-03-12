@@ -1,6 +1,8 @@
 
 const Z = 90;
 const S = 83;
+const ARROW_UP = 38;
+const ARROW_DOWN = 40;
 
 const SPEED_X = 10;
 const SPEED_PAD = 15;
@@ -126,9 +128,9 @@ function keyPressed() {
     joueur1.speed = SPEED_PAD;
   } 
 
-  if (keyCode === UP_ARROW) {
+  if (keyCode === ARROW_UP) {
     joueur2.speed = -SPEED_PAD2;
-  } else if (keyCode === DOWN_ARROW) {
+  } else if (keyCode === ARROW_DOWN) {
     joueur2.speed = SPEED_PAD2;
   }
 }
