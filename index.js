@@ -22,7 +22,9 @@ const joueur1 = {
   width: PAD_WIDTH,
   speed: 0,
   score: 0,
-  textScore : 'Score joueur 1 = 0'
+  textScore : 'Score joueur 1 = 0',
+  texteX : 50,
+  texteY : 100
 };
 
 const joueur2 = {
@@ -32,7 +34,9 @@ const joueur2 = {
   width: PAD_WIDTH,
   speed: 0,
   score: 0,
-  textScore : 'Score joueur 2 = 0'
+  textScore : 'Score joueur 2 = 0',
+  texteX : 500,
+  texteY : 100
 };
 
 const ball = {
@@ -78,6 +82,16 @@ function keyPressed() {
   } else if (keyCode === ARROW_DOWN) {
     joueur2.speed = SPEED_PAD2;
   }
+}
+
+function keyUnPressed() {
+  if (!(keyIsDown(Z) || keyIsDown(S))) {
+    joueur1.speed = 0;
+  } 
+
+  if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
+    joueur2.speed = 0;
+  } 
 }
 
 function updateBall(ball) {
@@ -128,18 +142,10 @@ function updateBall(ball) {
 
 }
 
-function updatePad(pad) {
-  if (!(keyIsDown(Z) || keyIsDown(S))) {
-    joueur1.speed = 0;
-  } 
+function updatePad(joueur) {
 
-  if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
-    joueur2.speed = 0;
-  } 
-
-  joueur1.y += joueur1.speed;
-  joueur2.y += joueur2.speed;
-
+  keyUnPressed();
+  joueur.y += joueur.speed;
   keyPressed();
   
 }
@@ -149,17 +155,13 @@ function drawBall(ball) {
 
 }
 
-
-function drawPad(pad) {
-  rect(joueur1.x, joueur1.y, joueur1.width, joueur1.height);
-  rect(joueur2.x, joueur2.y, joueur2.width, joueur2.height);
-
+function drawPad(joueur) {
+  rect(joueur.x, joueur.y, joueur.width, joueur.height);
 }
 
 function drawScore(joueur) {
   textSize(32);
-  text(joueur1.textScore, 50, 100);
-  text(joueur2.textScore, 500, 100);
+  text(joueur.textScore, joueur.texteX, joueur.texteY);
 
 }
 
