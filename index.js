@@ -61,7 +61,9 @@ function draw() {
   drawBall(ball);
   drawPad(joueur1);
   drawPad(joueur2);
-  drawScore();
+  drawScore(joueur1);
+  drawScore(joueur2);
+
 }
  
 function keyPressed() {
@@ -127,8 +129,6 @@ function updateBall(ball) {
 }
 
 function updatePad(pad) {
-
-
   if (!(keyIsDown(Z) || keyIsDown(S))) {
     joueur1.speed = 0;
   } 
@@ -156,7 +156,7 @@ function drawPad(pad) {
 
 }
 
-function drawScore() {
+function drawScore(joueur) {
   textSize(32);
   text(joueur1.textScore, 50, 100);
   text(joueur2.textScore, 500, 100);
