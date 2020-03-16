@@ -21,7 +21,8 @@ const joueur1 = {
   height: PAD_HEIGTH,
   width: PAD_WIDTH,
   speed: 0,
-  score: 0
+  score: 0,
+  textScore : 'Score joueur 1 = 0'
 };
 
 const joueur2 = {
@@ -30,7 +31,8 @@ const joueur2 = {
   height: PAD_HEIGTH,
   width: PAD_WIDTH,
   speed: 0,
-  score: 0
+  score: 0,
+  textScore : 'Score joueur 2 = 0'
 };
 
 const ball = {
@@ -41,18 +43,8 @@ const ball = {
   speed_y: 0
 };
 
-// Doit correspondre a la position actuelle de la balle par rapport au joueur, 
-// pas seulement à l'initialization !
-const RATIO = joueur1.y/(joueur1.y + (joueur1.height/2));
-const RATIO2 = joueur2.y/(joueur2.y + (joueur2.height/2));
-
 let SPEED_Y = 0;
 
-//  A mettre dans les fonctions update
-/*
-let textScore = 'Score joueur 1 = ' + joueur1.score;
-let textScore2 = 'Score joueur 2 = ' + joueur2.score;
-*/
 
 function setup() {
   frameRate(30);
@@ -61,82 +53,15 @@ function setup() {
 
 function draw() {
   background(75);
-  // A mettre dans les fonctions update
 
-  /*
-    if (!(keyIsDown(Z) || keyIsDown(S))) {
-    joueur1.speed = 0;
-  } 
-
-  if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
-    joueur2.speed = 0;
-  } 
-  joueur1.y += joueur1.speed;
-  joueur2.y += joueur2.speed;
-
-  ball.x += ball.speed_x;
-  ball.y += ball.speed_y;
-
-  if (ball.x >= (WIDTH - ball.radius)) {
-    ball.x = WIDTH/2;
-    ball.y = HEIGHT/2;
-    ball.speed_y = 0;
-    joueur1.score ++;
-    textScore = 'Score joueur 1 = ' + joueur1.score;
-  }
-  else if (ball.x <= ball.radius) {
-    ball.x = WIDTH/2;
-    ball.y = HEIGHT/2;
-    ball.speed_y = 0;
-    joueur2.score ++;
-    textScore2 = 'Score joueur 2 = ' + joueur2.score;
-  }
-  else if (ball.y >= (HEIGHT)) {
-    ball.speed_y = -SPEED_Y;
-  }
-  else if (ball.y <= 0) {
-    ball.speed_y = SPEED_Y;
-  }
- 
-  if ((ball.x <= joueur1.x + joueur1.width + ball.radius) && ((ball.y >= joueur1.y) && (ball.y <= joueur1.y + joueur1.height/2))) {
-    ball.speed_x = SPEED_X;
-    SPEED_Y = SPEED_Y_MAX * RATIO;
-    ball.speed_y = -SPEED_Y ;
-  }
-  else if ((ball.x <= joueur1.x + joueur1.width + ball.radius) && ((ball.y >= joueur1.y + joueur1.height/2) && (ball.y <= joueur1.y + joueur1.height))) {
-    ball.speed_x = SPEED_X;
-    SPEED_Y = SPEED_Y_MAX * RATIO;
-    ball.speed_y = SPEED_Y;
-  }
-  else if ((ball.x >= joueur2.x - ball.radius) && ((ball.y >= joueur2.y) && (ball.y <= joueur2.y + joueur2.height/2))){
-    ball.speed_x = -SPEED_X;
-    SPEED_Y = SPEED_Y_MAX * RATIO2;
-    ball.speed_y = -SPEED_Y;
-  }
-  else if ((ball.x >= joueur2.x - ball.radius) && ((ball.y >= joueur2.y + joueur2.height/2) && (ball.y <= joueur2.y + joueur2.height))) {
-    ball.speed_x = -SPEED_X;
-    SPEED_Y = SPEED_Y_MAX * RATIO2;
-    ball.speed_y = SPEED_Y;
-  }*/
   updateBall(ball);
   updatePad(joueur1);
   updatePad(joueur2);
 
-  // A mettre dans les fonctions draw
-
-  /*
-  circle(ball.x, ball.y, ball.radius);
-  rect(joueur1.x, joueur1.y, joueur1.width, joueur1.height);
-  rect(joueur2.x, joueur2.y, joueur2.width, joueur2.height);
-  textSize(32);
-  text(textScore, 50, 100);
-  text(textScore2, 500, 100);
-*/
   drawBall(ball);
   drawPad(joueur1);
   drawPad(joueur2);
-
- 
+  drawScore();
 }
  
 function keyPressed() {
@@ -154,22 +79,87 @@ function keyPressed() {
 }
 
 function updateBall(ball) {
+  ball.x += ball.speed_x;
+  ball.y += ball.speed_y;
+
+  if (ball.x >= (WIDTH - ball.radius)) {
+    ball.x = WIDTH/2;
+    ball.y = HEIGHT/2;
+    ball.speed_y = 0;
+    joueur1.score ++;
+    joueur1.textScore = 'Score joueur 1 = ' + joueur1.score;
+  }
+  else if (ball.x <= ball.radius) {
+    ball.x = WIDTH/2;
+    ball.y = HEIGHT/2;
+    ball.speed_y = 0;
+    joueur2.score ++;
+    joueur2.textScore = 'Score joueur 2 = ' + joueur2.score;
+  }
+  else if (ball.y >= (HEIGHT)) {
+    ball.speed_y = -SPEED_Y;
+  }
+  else if (ball.y <= 0 + ball.radius) {
+    ball.speed_y = SPEED_Y;
+  }
+
+  if ((ball.x <= joueur1.x + joueur1.width + ball.radius) && ((ball.y >= joueur1.y) && (ball.y <= joueur1.y + joueur1.height/2))) {
+    ball.speed_x = SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * (joueur1.y / (ball.y + joueur1.height/2));
+    ball.speed_y = -SPEED_Y ;
+  }
+  else if ((ball.x <= joueur1.x + joueur1.width + ball.radius) && ((ball.y >= joueur1.y + joueur1.height/2) && (ball.y <= joueur1.y + joueur1.height))) {
+    ball.speed_x = SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * ((joueur1.y + joueur1.height/2) / (ball.y + joueur1.height));
+    ball.speed_y = SPEED_Y;
+  }
+  else if ((ball.x >= joueur2.x - ball.radius) && ((ball.y >= joueur2.y) && (ball.y <= joueur2.y + joueur2.height/2))){
+    ball.speed_x = -SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * (joueur2.y / (ball.y + joueur2.height/2));
+    ball.speed_y = -SPEED_Y;
+  }
+  else if ((ball.x >= joueur2.x - ball.radius) && ((ball.y >= joueur2.y + joueur2.height/2) && (ball.y <= joueur2.y + joueur2.height))) {
+    ball.speed_x = -SPEED_X;
+    SPEED_Y = SPEED_Y_MAX * ((joueur2.y + joueur2.height/2) / (ball.y + joueur2.height));
+    ball.speed_y = SPEED_Y;
+  }
 
 }
 
 function updatePad(pad) {
 
+
+  if (!(keyIsDown(Z) || keyIsDown(S))) {
+    joueur1.speed = 0;
+  } 
+
+  if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
+    joueur2.speed = 0;
+  } 
+
+  joueur1.y += joueur1.speed;
+  joueur2.y += joueur2.speed;
+
+  keyPressed();
+  
 }
 
 function drawBall(ball) {
+  circle(ball.x, ball.y, ball.radius);
 
 }
+
 
 function drawPad(pad) {
+  rect(joueur1.x, joueur1.y, joueur1.width, joueur1.height);
+  rect(joueur2.x, joueur2.y, joueur2.width, joueur2.height);
 
 }
 
-function drawScore(score) {
+function drawScore() {
+  textSize(32);
+  text(joueur1.textScore, 50, 100);
+  text(joueur2.textScore, 500, 100);
 
 }
 
