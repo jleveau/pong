@@ -41,12 +41,18 @@ const ball = {
   speed_y: 0
 };
 
+// Doit correspondre a la position actuelle de la balle par rapport au joueur, 
+// pas seulement à l'initialization !
 const RATIO = joueur1.y/(joueur1.y + (joueur1.height/2));
 const RATIO2 = joueur2.y/(joueur2.y + (joueur2.height/2));
+
 let SPEED_Y = 0;
 
+//  A mettre dans les fonctions update
+/*
 let textScore = 'Score joueur 1 = ' + joueur1.score;
 let textScore2 = 'Score joueur 2 = ' + joueur2.score;
+*/
 
 function setup() {
   frameRate(30);
@@ -55,15 +61,16 @@ function setup() {
 
 function draw() {
   background(75);
+  // A mettre dans les fonctions update
 
-  if (!(keyIsDown(Z) || keyIsDown(S))) {
+  /*
+    if (!(keyIsDown(Z) || keyIsDown(S))) {
     joueur1.speed = 0;
   } 
 
   if (!(keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW))) {
     joueur2.speed = 0;
   } 
-
   joueur1.y += joueur1.speed;
   joueur2.y += joueur2.speed;
 
@@ -110,15 +117,26 @@ function draw() {
     ball.speed_x = -SPEED_X;
     SPEED_Y = SPEED_Y_MAX * RATIO2;
     ball.speed_y = SPEED_Y;
-  }
+  }*/
+  updateBall(ball);
+  updatePad(joueur1);
+  updatePad(joueur2);
 
+  // A mettre dans les fonctions draw
 
+  /*
   circle(ball.x, ball.y, ball.radius);
   rect(joueur1.x, joueur1.y, joueur1.width, joueur1.height);
   rect(joueur2.x, joueur2.y, joueur2.width, joueur2.height);
   textSize(32);
   text(textScore, 50, 100);
   text(textScore2, 500, 100);
+*/
+  drawBall(ball);
+  drawPad(joueur1);
+  drawPad(joueur2);
+
+ 
 }
  
 function keyPressed() {
@@ -133,6 +151,26 @@ function keyPressed() {
   } else if (keyCode === ARROW_DOWN) {
     joueur2.speed = SPEED_PAD2;
   }
+}
+
+function updateBall(ball) {
+
+}
+
+function updatePad(pad) {
+
+}
+
+function drawBall(ball) {
+
+}
+
+function drawPad(pad) {
+
+}
+
+function drawScore(score) {
+
 }
 
 
